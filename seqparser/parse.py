@@ -103,6 +103,7 @@ class Parser:
         #
         # the interpretation of the following code is that for the lifetime of the filebuffer
         # returned by the `open` function it will be accessible as the variable `f_obj`
+
         with open(self.filename, "r") as f_obj:
 
             # this loop will break at some point!
@@ -115,9 +116,9 @@ class Parser:
             # Alternatively, you can reformulate this to return elements
             # by just consuming an iterator.
 
-            while True:
-                rec = self.get_record(f_obj)
-                yield rec
+            rec = self.get_record(f_obj)
+            for seq in rec:
+                yield seq
 
     def _get_record(
         self, f_obj: io.TextIOWrapper
@@ -141,7 +142,20 @@ class FastaParser(Parser):
         """
         returns the next fasta record
         """
-        pass
+        seq = None
+        seq_name = None
+
+        for line in f_obj:
+            line = line.strip()
+            if line.startswith(">"):
+                seq_name = line[len(">"):]
+            if line.startswith("A") or line.startswith("T") or line.startswith("C") or \
+                    line.startswith("G"):
+                seq = line
+            if seq and seq_name:
+                yield seq_name, seq
+                seq = None
+                seq_name = None
 
 
 class FastqParser(Parser):
@@ -153,4 +167,21 @@ class FastqParser(Parser):
         """
         returns the next fastq record
         """
-        pass
+        seq = None
+        seq_name = None
+        quality = None
+
+        for line in f_obj:
+            line = line.strip()
+            if line.startswith("@"):
+                seq_name = line[len("@"):]
+            elif line.startswith("A") or line.startswith("T") or line.startswith("C") or \
+                    line.startswith("G"):
+                seq = line
+            elif line and not line.startswith("+"):
+                quality = line
+            if seq and seq_name and quality:
+                yield seq_name, seq, quality
+                seq = None
+                quality = None
+                seq_name = None
