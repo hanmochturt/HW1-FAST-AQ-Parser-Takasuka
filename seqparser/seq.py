@@ -9,6 +9,7 @@ def transcribe(seq: str) -> str:
     the complement sequence with T -> U replacement
     """
     transcribed_seq_list = []
+
     for nucleotide in seq:
         transcribed_nucleotide = TRANSCRIPTION_PAIRS[nucleotide]
         transcribed_seq_list.append(transcribed_nucleotide)
