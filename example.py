@@ -7,7 +7,7 @@ from seqparser import (
 import os
 import pathlib
 import file_format
-from typing import Dict
+from typing import Dict, Tuple
 
 DATA_FOLDER = "data"
 FASTA_FILETYPE = ".fa"
@@ -18,10 +18,7 @@ def main():
     """
     The main function
     """
-    parent_this_filepath = pathlib.Path(__file__).parent.resolve()
-    fa_fq_filenames = find_fasta_fastq_files(parent_this_filepath / "data")
-    fasta_file = parent_this_filepath / "data" / fa_fq_filenames[FASTA_FILETYPE]
-    fastq_file = parent_this_filepath / "data" / fa_fq_filenames[FASTQ_FILETYPE]
+    fasta_file, fastq_file = find_fasta_fastq_files()
 
     # Create instance of FastaParser
     # Create instance of FastqParser
@@ -62,7 +59,16 @@ the following if statement
 """
 
 
-def find_fasta_fastq_files(folder: str) -> Dict:
+def find_fasta_fastq_files() -> Tuple:
+    """find first .fa and .fq files in the parent directory"""
+    parent_this_filepath = pathlib.Path(__file__).parent.resolve()
+    fa_fq_filenames = find_fasta_fastq_files_from_folder(parent_this_filepath / "data")
+    fasta_file = parent_this_filepath / "data" / fa_fq_filenames[FASTA_FILETYPE]
+    fastq_file = parent_this_filepath / "data" / fa_fq_filenames[FASTQ_FILETYPE]
+    return fasta_file, fastq_file
+
+
+def find_fasta_fastq_files_from_folder(folder: str) -> Dict:
     """find first .fa and .fq files"""
     files = os.listdir(folder)
     fasta_fastq_files = dict.fromkeys([FASTA_FILETYPE, FASTQ_FILETYPE])

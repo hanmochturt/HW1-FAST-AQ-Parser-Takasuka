@@ -1,13 +1,16 @@
 # write tests for transcribes
+# test using "pytest" in command line
+import sys
+import pathlib
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent.resolve()))
+
 from seqparser import (
         transcribe,
         reverse_transcribe)
 
-import unittest
-
 SEQUENCE = "CAAACCGGCGATGCGG"
-TRANSCRIBED_SEQ = "GTTTGGCCGCUACGCC"
-REV_TRANSCRIBED_SEQ = "CCGCAUCGCCGGTTTG"
+TRANSCRIBED_SEQ = "GUUUGGCCGCUACGCC"
+REV_TRANSCRIBED_SEQ = "CCGCAUCGCCGGUUUG"
 
 
 def test_freebie_transcribe_1():
