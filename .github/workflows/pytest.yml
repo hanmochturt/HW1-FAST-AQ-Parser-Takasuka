@@ -1,5 +1,5 @@
 name: PyTest
-3on: push
+on: push
 
 jobs:
   build:
